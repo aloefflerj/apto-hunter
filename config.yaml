@@ -1,0 +1,99 @@
+# ============================================================
+#  Apto Hunter — regras da busca
+#  Edite à vontade; o robô lê este arquivo a cada execução.
+# ============================================================
+
+cidade: Porto Alegre
+
+preco:
+  maximo: 250000          # teto normal
+  maximo_excecao: 280000  # só entra se a oportunidade for MUITO boa (ver regra abaixo)
+  # "MUITO boa" = R$/m² pelo menos X% abaixo da mediana da região E bairro nível 1 ou 2
+  excecao_desconto_minimo: 0.15
+
+area_minima: 60
+quartos_minimo: 2
+
+excluir:
+  mobiliado: true        # "semi-mobiliado" não exclui, só perde pontos
+  leilao: true           # leilões costumam não aceitar financiamento comum
+
+# Bairros aceitos e o "peso" de cada um (nível 1 = foco, 3 = borda da região).
+# Qualquer bairro fora desta lista é descartado.
+# Nomes sem acento/minúsculos; aliases ajudam a reconhecer variações dos sites.
+bairros:
+  1:
+    - sao joao
+    - passo da areia        # inclui IAPI
+    - petropolis
+    - auxiliadora
+  2:
+    - higienopolis
+    - vila ipiranga
+    - jardim sao pedro
+    - cristo redentor
+    - jardim lindoia
+    - boa vista
+    - santa maria goretti
+    - floresta
+    - navegantes
+    - jardim floresta
+    - chacara das pedras
+    - tres figueiras
+    - mont serrat
+    - bela vista
+    - rio branco
+    - moinhos de vento
+    - independencia
+    - jardim europa
+    - vila jardim
+  3:
+    - jardim itu sabara
+    - sao geraldo
+    - humaita
+    - farrapos
+    - santa cecilia
+    - jardim botanico
+    - santana
+
+aliases:
+  passo d areia: passo da areia
+  passo d'areia: passo da areia
+  passo dareia: passo da areia
+  iapi: passo da areia
+  vila ipiranga: vila ipiranga
+  vl ipiranga: vila ipiranga
+  jardim itu: jardim itu sabara
+  jardim sabara: jardim itu sabara
+  sabara: jardim itu sabara
+  jd itu sabara: jardim itu sabara
+  jd lindoia: jardim lindoia
+  jd sao pedro: jardim sao pedro
+  jd floresta: jardim floresta
+  jd europa: jardim europa
+  jd botanico: jardim botanico
+  sta maria goretti: santa maria goretti
+  sta cecilia: santa cecilia
+  s joao: sao joao
+  s geraldo: sao geraldo
+  montserrat: mont serrat
+
+# Quantas páginas ler de cada fonte por execução (mais = mais lento e mais chance de bloqueio)
+paginas:
+  zap: 3
+  vivareal: 3
+  olx: 6
+  quintoandar: 3      # páginas de 60
+  imovelweb: 3
+  chavesnamao: 3
+
+# Quantos anúncios novos abrir para ler a descrição (detectar gás / mobiliado)
+detalhes_por_execucao: 30
+
+# Mensagem no Telegram
+telegram:
+  max_itens: 10
+  enviar_quando_vazio: true
+
+# Endereço da página (preenchido no README após ativar o GitHub Pages)
+site_url: "https://SEU-USUARIO.github.io/apto-hunter/"

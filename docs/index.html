@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apto Hunter</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f5f2; --surface:#ffffff; --surface-2:#f0eee9; --text:#1d1b18; --muted:#6b675f; --line:#e3e0d8;
+  --accent:#2f6b4f; --accent-soft:#e3efe8; --warn:#9a5b00; --warn-soft:#fbefd9; --bad:#a23b2a;
+  --s1:#2f6b4f; --s2:#7a8f2e; --s3:#b07d1a; --s4:#a8552b;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141412; --surface:#1d1c1a; --surface-2:#262522; --text:#ecebe6; --muted:#a19d93; --line:#33312d;
+  --accent:#6cc39a; --accent-soft:#1f3329; --warn:#e5a54b; --warn-soft:#3a2c17; --bad:#e07a68;
+  --s1:#6cc39a; --s2:#b5c95a; --s3:#e0b04f; --s4:#e08a5f; --shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#141412; --surface:#1d1c1a; --surface-2:#262522; --text:#ecebe6; --muted:#a19d93; --line:#33312d;
+  --accent:#6cc39a; --accent-soft:#1f3329; --warn:#e5a54b; --warn-soft:#3a2c17; --bad:#e07a68;
+  --s1:#6cc39a; --s2:#b5c95a; --s3:#e0b04f; --s4:#e08a5f; --shadow:none;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header{padding:28px 0 8px}
+h1{font-size:26px;letter-spacing:-.02em;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px}
+.kpis{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:130px}
+.kpi b{display:block;font-size:20px;letter-spacing:-.01em}
+.kpi span{color:var(--muted);font-size:12px}
+.controls{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:18px}
+.controls .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select,input[type=search]{font:inherit;font-size:14px;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+input[type=search]{flex:1;min-width:160px}
+.chip-toggle{font-size:13px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;user-select:none;color:var(--text)}
+.chip-toggle[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .chip-toggle[aria-pressed=true]{color:#0f1a14}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip-toggle[aria-pressed=true]{color:#0f1a14}}
+.count{color:var(--muted);font-size:13px;margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;padding-bottom:40px}
+@media (max-width:420px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.media{position:relative;aspect-ratio:16/9;background:var(--surface-2)}
+.media img{width:100%;height:100%;object-fit:cover;display:block}
+.rank{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.62);color:#fff;font-weight:600;font-size:12px;border-radius:8px;padding:3px 8px}
+.score{position:absolute;right:10px;top:10px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:16px;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.price b{font-size:22px;letter-spacing:-.02em}
+.ppm{font-size:13px;color:var(--muted)}
+.ppm .good{color:var(--accent);font-weight:600}
+.ppm .bad{color:var(--bad);font-weight:600}
+.where{font-weight:600}
+.where small{color:var(--muted);font-weight:400}
+.specs{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;background:var(--surface-2);border-radius:6px;padding:3px 7px;color:var(--text)}
+.tag.ok{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tag.warn{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.tag.new{background:var(--accent);color:#fff;font-weight:600}
+:root[data-theme="dark"] .tag.new{color:#0f1a14}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tag.new{color:#0f1a14}}
+.snip{color:var(--muted);font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0}
+details{font-size:12px;color:var(--muted)}
+details summary{cursor:pointer}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:3px 8px;margin-top:6px;align-items:center}
+.bar{height:6px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bar i.neg{background:var(--bad)}
+.links{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
+.links a{font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.links a:first-child{background:var(--text);color:var(--bg);border-color:var(--text)}
+.empty{padding:60px 0;text-align:center;color:var(--muted)}
+footer{color:var(--muted);font-size:12px;padding:10px 0 40px}
+.theme{position:absolute;right:16px;top:28px;background:none;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:6px 10px;cursor:pointer;font:inherit;font-size:13px}
+header{position:relative}
+@media (max-width:640px){.controls{position:static}.theme{top:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Apto Hunter</h1>
+    <div class="sub" id="sub">Carregando…</div>
+    <button class="theme" id="theme" aria-label="Alternar tema">Tema</button>
+    <div class="kpis" id="kpis"></div>
+  </header>
+</div>
+<div class="controls"><div class="wrap row">
+  <input type="search" id="q" placeholder="Buscar rua, bairro, texto…">
+  <select id="sort" aria-label="Ordenar">
+    <option value="score">Melhor nota</option>
+    <option value="price">Menor preço</option>
+    <option value="ppm2">Menor R$/m²</option>
+    <option value="recent">Mais recentes</option>
+    <option value="area">Maior área</option>
+  </select>
+  <select id="tier" aria-label="Região">
+    <option value="3">Toda a região</option>
+    <option value="2">Nível 1 e 2</option>
+    <option value="1">Só nível 1</option>
+  </select>
+  <select id="bairro" aria-label="Bairro"><option value="">Todos os bairros</option></select>
+  <button class="chip-toggle" id="fNew" aria-pressed="false">Novos (48h)</button>
+  <button class="chip-toggle" id="fGas" aria-pressed="false">Com gás</button>
+  <button class="chip-toggle" id="fVaga" aria-pressed="false">Com vaga</button>
+  <button class="chip-toggle" id="fBudget" aria-pressed="false">Até 250 mil</button>
+  <span class="count" id="count"></span>
+</div></div>
+<main class="wrap"><div class="grid" id="grid"></div></main>
+<div class="wrap"><footer id="foot"></footer></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const brl = v => v ? 'R$ ' + Math.round(v).toLocaleString('pt-BR') : '—';
+const ACC = {'sao joao':'São João','petropolis':'Petrópolis','higienopolis':'Higienópolis','jardim sao pedro':'Jardim São Pedro','jardim lindoia':'Jardim Lindóia','chacara das pedras':'Chácara das Pedras','tres figueiras':'Três Figueiras','independencia':'Independência','jardim itu sabara':'Jardim Itu Sabará','sao geraldo':'São Geraldo','humaita':'Humaitá','santa cecilia':'Santa Cecília','jardim botanico':'Jardim Botânico','passo da areia':"Passo d'Areia (IAPI)",'mont serrat':'Mont Serrat'};
+const titleCase = s => ACC[s] || (s||'').split(' ').map(w => ['da','de','do','das','dos'].includes(w) ? w : w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+const scoreColor = s => s >= 70 ? 'var(--s1)' : s >= 55 ? 'var(--s2)' : s >= 40 ? 'var(--s3)' : 'var(--s4)';
+const PARTS = {preco_m2:['R$/m² vs região',40], preco:['Preço baixo',10], local:['Localização',20], area:['Área',8], quartos:['3+ quartos',4], vaga:['Vaga',5], gas:['Gás',7], cond:['Condomínio',6], semi:['Semi-mobiliado',2]};
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// tema
+(function(){
+  let t = null; try { t = localStorage.getItem('theme'); } catch(e) {}
+  if (t) document.documentElement.dataset.theme = t;
+  $('#theme').onclick = () => {
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const cur = document.documentElement.dataset.theme || (dark ? 'dark' : 'light');
+    const nx = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = nx;
+    try { localStorage.setItem('theme', nx); } catch(e) {}
+  };
+})();
+
+let DATA = null;
+const state = {q:'', sort:'score', tier:3, bairro:'', fNew:false, fGas:false, fVaga:false, fBudget:false};
+
+function card(l, i, med){
+  const ratio = l.ppm2 && med ? l.ppm2 / med : null;
+  const pct = ratio ? Math.round((1 - ratio) * 100) : null;
+  const ppmTxt = l.ppm2 ? `${brl(l.ppm2)}/m² ${pct !== null ? (pct >= 0 ? `<span class="good">${pct}% abaixo</span>` : `<span class="bad">${-pct}% acima</span>`) + ' da mediana' : ''}` : '';
+  const isNew = (Date.now() - new Date(l.first_seen)) < 48*3600e3;
+  const tags = [];
+  if (isNew) tags.push('<span class="tag new">Novo</span>');
+  if (l.price_drop) { const h = l.price_history.at(-1); tags.push(`<span class="tag ok">Baixou de ${brl(h.from)}</span>`); }
+  if (l.area) tags.push(`<span class="tag">${Math.round(l.area)} m²</span>`);
+  if (l.rooms) tags.push(`<span class="tag">${l.rooms} quartos</span>`);
+  if (l.parking) tags.push(`<span class="tag">${l.parking} vaga${l.parking>1?'s':''}</span>`);
+  if (l.condo) tags.push(`<span class="tag">Cond. ${brl(l.condo)}</span>`);
+  if (l.iptu) tags.push(`<span class="tag">IPTU ${brl(l.iptu)}</span>`);
+  if (l.gas === true) tags.push('<span class="tag ok">Aquecimento a gás</span>');
+  if (l.gas === false) tags.push('<span class="tag">Chuveiro elétrico</span>');
+  if (l.semi_furnished) tags.push('<span class="tag warn">Semi-mobiliado</span>');
+  if (l.exception) tags.push('<span class="tag warn">Acima de 250 mil (exceção)</span>');
+  const bars = Object.entries(l.score_parts||{}).map(([k,v]) => {
+    const [label,max] = PARTS[k] || [k,10];
+    const w = Math.min(100, Math.abs(v)/max*100);
+    return `<span>${label}</span><span class="bar"><i class="${v<0?'neg':''}" style="width:${w}%"></i></span><span>${v>0?'+':''}${v}</span>`;
+  }).join('');
+  const links = l.links.map(k => `<a href="${esc(k.url)}" target="_blank" rel="noopener">${esc(k.source)} ↗</a>`).join('');
+  const img = l.img ? `<img src="${esc(l.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
+  return `<article class="card">
+    <div class="media">${img}<span class="rank">#${i+1}</span><span class="score" style="background:${scoreColor(l.score)}" title="Nota da oportunidade">${Math.round(l.score)}</span></div>
+    <div class="body">
+      <div class="price"><b>${brl(l.price)}</b><span class="ppm">${ppmTxt}</span></div>
+      <div class="where">${esc(titleCase(l.bairro))} <small>· nível ${l.tier}${l.address ? ' · ' + esc(l.address) : ''}</small></div>
+      <div class="specs">${tags.join('')}</div>
+      ${l.snippet ? `<p class="snip">${esc(l.snippet)}</p>` : ''}
+      <details><summary>Por que essa nota?</summary><div class="bars">${bars}</div></details>
+      <div class="links">${links}</div>
+    </div></article>`;
+}
+
+function render(){
+  if (!DATA) return;
+  const med = DATA.median_ppm2;
+  const q = state.q.toLowerCase();
+  let rows = DATA.listings.filter(l =>
+    (l.tier || 3) <= state.tier &&
+    (!state.bairro || l.bairro === state.bairro) &&
+    (!state.fNew || (Date.now() - new Date(l.first_seen)) < 48*3600e3) &&
+    (!state.fGas || l.gas === true) &&
+    (!state.fVaga || (l.parking||0) >= 1) &&
+    (!state.fBudget || l.price <= DATA.rules.preco_max) &&
+    (!q || [l.title,l.bairro,l.address,l.snippet].join(' ').toLowerCase().includes(q))
+  );
+  const by = {
+    score:(a,b)=>b.score-a.score, price:(a,b)=>a.price-b.price,
+    ppm2:(a,b)=>(a.ppm2||1e9)-(b.ppm2||1e9), recent:(a,b)=>b.first_seen.localeCompare(a.first_seen),
+    area:(a,b)=>(b.area||0)-(a.area||0)};
+  rows.sort(by[state.sort]);
+  $('#count').textContent = `${rows.length} de ${DATA.listings.length}`;
+  $('#grid').innerHTML = rows.length ? rows.map((l,i)=>card(l,i,med)).join('') : '<div class="empty">Nada com esses filtros.</div>';
+}
+
+function bind(){
+  $('#q').oninput = e => { state.q = e.target.value; render(); };
+  $('#sort').onchange = e => { state.sort = e.target.value; render(); };
+  $('#tier').onchange = e => { state.tier = +e.target.value; render(); };
+  $('#bairro').onchange = e => { state.bairro = e.target.value; render(); };
+  for (const id of ['fNew','fGas','fVaga','fBudget']) {
+    $('#'+id).onclick = e => { state[id] = !state[id]; e.target.setAttribute('aria-pressed', state[id]); render(); };
+  }
+}
+
+fetch('data.json', {cache:'no-store'}).then(r => r.json()).then(d => {
+  DATA = d;
+  const up = new Date(d.updated_at);
+  $('#sub').textContent = `Apartamentos à venda em Porto Alegre · atualizado ${up.toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'})}`;
+  const news = d.listings.filter(l => (Date.now() - new Date(l.first_seen)) < 48*3600e3).length;
+  const best = d.listings[0];
+  $('#kpis').innerHTML = [
+    [d.listings.length, 'imóveis no ranking'],
+    [news, 'novos em 48h'],
+    [brl(d.median_ppm2), 'mediana R$/m² da região'],
+    [best ? brl(best.price) : '—', 'melhor oportunidade'],
+  ].map(([v,l]) => `<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join('');
+  const bs = [...new Set(d.listings.map(l => l.bairro))].sort();
+  $('#bairro').innerHTML += bs.map(b => `<option value="${esc(b)}">${esc(titleCase(b))}</option>`).join('');
+  const st = Object.entries(d.stats||{}).map(([k,v]) => `${k}: ${v}`).join(' · ');
+  $('#foot').textContent = `Regras: até ${brl(d.rules.preco_max)} (exceção até ${brl(d.rules.preco_excecao)} se o R$/m² for muito abaixo da mediana), ≥ ${d.rules.area_min} m², ≥ ${d.rules.quartos_min} quartos, sem mobília. Última coleta — ${st}`;
+  bind(); render();
+}).catch(e => { $('#sub').textContent = 'Não foi possível carregar data.json'; console.error(e); });
+</script>
+</body>
+</html>

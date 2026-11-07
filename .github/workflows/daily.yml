@@ -1,0 +1,54 @@
+name: Busca diária de apartamentos
+
+on:
+  schedule:
+    - cron: "17 10 * * *"   # 07:17 em Porto Alegre (UTC-3). O GitHub pode atrasar alguns minutos.
+  workflow_dispatch:          # botão "Run workflow" para rodar na hora
+    inputs:
+      telegram:
+        description: "Enviar Telegram?"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apto-hunter
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Buscar, pontuar e notificar
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.telegram }}" = "false" ]; then
+            python -m apto.main --no-telegram
+          else
+            python -m apto.main
+          fi
+
+      - name: Salvar dados e página
+        run: |
+          git config user.name "apto-hunter-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/listings.json docs/data.json
+          git diff --cached --quiet || git commit -m "Atualiza anúncios $(date -u +%F)"
+          git push
