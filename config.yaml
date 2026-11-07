@@ -27,8 +27,10 @@ bairros:
     - passo da areia        # inclui IAPI
     - petropolis
     - auxiliadora
-  2:
     - higienopolis
+    - mont serrat
+    - moinhos de vento
+  2:
     - vila ipiranga
     - jardim sao pedro
     - cristo redentor
@@ -36,22 +38,17 @@ bairros:
     - boa vista
     - santa maria goretti
     - floresta
-    - navegantes
     - jardim floresta
     - chacara das pedras
     - tres figueiras
-    - mont serrat
     - bela vista
     - rio branco
-    - moinhos de vento
     - independencia
     - jardim europa
     - vila jardim
   3:
     - jardim itu sabara
     - sao geraldo
-    - humaita
-    - farrapos
     - santa cecilia
     - jardim botanico
     - santana
